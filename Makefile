@@ -6,7 +6,8 @@
 #
 
 # Name of target to be created (-o option)
-TARGET = lab4-kickstarter$(EXE_SUFFIX)
+TARGET = lab4-kickstarter$(D)$(EXE_SUFFIX)
+TARGET_DIR = .
 
 # User interface (uncomment one) (-u option)
 USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(QTENV_LIBS) $(CMDENV_LIBS)
@@ -80,8 +81,14 @@ endif
 #------------------------------------------------------------------------------
 
 # Main target
-all: $O/$(TARGET)
-	$(Q)$(LN) $O/$(TARGET) .
+all: $(TARGET_DIR)/$(TARGET)
+
+$(TARGET_DIR)/% :: $O/%
+	@mkdir -p $(TARGET_DIR)
+	$(Q)$(LN) $< $@
+ifeq ($(TOOLCHAIN_NAME),clangc2)
+	$(Q)-$(LN) $(<:%.dll=%.lib) $(@:%.dll=%.lib)
+endif
 
 $O/$(TARGET): $(OBJS)  $(wildcard $(EXTRA_OBJS)) Makefile $(CONFIGFILE)
 	@$(MKPATH) $O
@@ -99,7 +106,7 @@ $O/%.o: %.cc $(COPTS_FILE) | msgheaders smheaders
 
 %_m.cc %_m.h: %.msg
 	$(qecho) MSGC: $<
-	$(Q)$(MSGC) -s _m.cc $(MSGCOPTS) $?
+	$(Q)$(MSGC) -s _m.cc -MD -MP -MF $O/$(basename $@).d $(MSGCOPTS) $?
 
 %_sm.cc %_sm.h: %.sm
 	$(qecho) SMC: $<
@@ -110,12 +117,15 @@ msgheaders: $(MSGFILES:.msg=_m.h)
 smheaders: $(SMFILES:.sm=_sm.h)
 
 clean:
-	$(qecho) Cleaning...
+	$(qecho) Cleaning $(TARGET)
 	$(Q)-rm -rf $O
-	$(Q)-rm -f $(TARGET)
+	$(Q)-rm -f $(TARGET_DIR)/$(TARGET)
+	$(Q)-rm -f $(TARGET_DIR)/$(TARGET:%.dll=%.lib)
 	$(Q)-rm -f $(call opp_rwildcard, . , *_m.cc *_m.h *_sm.cc *_sm.h)
 
-cleanall: clean
+cleanall:
+	$(Q)$(MAKE) -s clean MODE=release
+	$(Q)$(MAKE) -s clean MODE=debug
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 # include all dependencies
