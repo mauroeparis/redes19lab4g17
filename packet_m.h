@@ -26,6 +26,7 @@
  *     int source;
  *     int destination;
  *     int hopCount;
+ *     bool isFeedback;
  * }
  * </pre>
  */
@@ -35,6 +36,7 @@ class Packet : public ::omnetpp::cPacket
     int source;
     int destination;
     int hopCount;
+    bool isFeedback;
 
   private:
     void copy(const Packet& other);
@@ -59,10 +61,100 @@ class Packet : public ::omnetpp::cPacket
     virtual void setDestination(int destination);
     virtual int getHopCount() const;
     virtual void setHopCount(int hopCount);
+    virtual bool getIsFeedback() const;
+    virtual void setIsFeedback(bool isFeedback);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const Packet& obj) {obj.parsimPack(b);}
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, Packet& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>packet.msg:8</tt> by nedtool.
+ * <pre>
+ * packet Feedback extends Packet
+ * {
+ *     int feedbackHopCount;
+ *     int route[];
+ * 
+ * }
+ * </pre>
+ */
+class Feedback : public ::Packet
+{
+  protected:
+    int feedbackHopCount;
+    int *route; // array ptr
+    unsigned int route_arraysize;
+
+  private:
+    void copy(const Feedback& other);
+
+  protected:
+    // protected and unimplemented operator==(), to prevent accidental usage
+    bool operator==(const Feedback&);
+
+  public:
+    Feedback(const char *name=nullptr, short kind=0);
+    Feedback(const Feedback& other);
+    virtual ~Feedback();
+    Feedback& operator=(const Feedback& other);
+    virtual Feedback *dup() const override {return new Feedback(*this);}
+    virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
+    virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
+
+    // field getter/setter methods
+    virtual int getFeedbackHopCount() const;
+    virtual void setFeedbackHopCount(int feedbackHopCount);
+    virtual void setRouteArraySize(unsigned int size);
+    virtual unsigned int getRouteArraySize() const;
+    virtual int getRoute(unsigned int k) const;
+    virtual void setRoute(unsigned int k, int route);
+};
+
+inline void doParsimPacking(omnetpp::cCommBuffer *b, const Feedback& obj) {obj.parsimPack(b);}
+inline void doParsimUnpacking(omnetpp::cCommBuffer *b, Feedback& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>packet.msg:14</tt> by nedtool.
+ * <pre>
+ * packet hello
+ * {
+ *     int sourceGate;
+ *     int destination;
+ * }
+ * </pre>
+ */
+class hello : public ::omnetpp::cPacket
+{
+  protected:
+    int sourceGate;
+    int destination;
+
+  private:
+    void copy(const hello& other);
+
+  protected:
+    // protected and unimplemented operator==(), to prevent accidental usage
+    bool operator==(const hello&);
+
+  public:
+    hello(const char *name=nullptr, short kind=0);
+    hello(const hello& other);
+    virtual ~hello();
+    hello& operator=(const hello& other);
+    virtual hello *dup() const override {return new hello(*this);}
+    virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
+    virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
+
+    // field getter/setter methods
+    virtual int getSourceGate() const;
+    virtual void setSourceGate(int sourceGate);
+    virtual int getDestination() const;
+    virtual void setDestination(int destination);
+};
+
+inline void doParsimPacking(omnetpp::cCommBuffer *b, const hello& obj) {obj.parsimPack(b);}
+inline void doParsimUnpacking(omnetpp::cCommBuffer *b, hello& obj) {obj.parsimUnpack(b);}
 
 
 #endif // ifndef __PACKET_M_H

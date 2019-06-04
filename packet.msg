@@ -3,15 +3,14 @@ packet Packet {
     int destination;
     int hopCount;
 	bool isFeedback;
+	bool isPathFinder;
+	list <int> route;
 }
 
 packet Feedback extends Packet{
 	int feedbackHopCount;
-	int route[];
-	
 }
 
-
-packet hello {
- 	int destination;  
+packet PathFinder extends Packet {
+    int sourceGate;
 }
