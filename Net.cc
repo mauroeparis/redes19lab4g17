@@ -55,18 +55,37 @@ void Net::handlePathFinder(Packet *pFndr) {
         fbk->setDestination(pFndr->getSource());
         fbk->setFeedbackHopCount(pFndr->getHopCount());
         fbk->setIsFeedback(true);
-        fbk->setRoute(pFndr->getRoute().reverse());
+        fbk->setRoute(pFndr->getRoute());
+        fbk->setFeedbackRoute(pFndr->getRoute().reverse());
         fbk->setHopCount(0);
     } else {
         for(int i=0;i <= this->getParentModule()->getlnk(); i = i + 1) {
-            PathFinder *pFndr = (PathFinder *) pkt;
-            pFndr->setRoute(
-                pFndr->getRoute().push_back(i)
-            );
-            pFndr->setSourceGate(i);
-            pFndr->setIsPathFinder(true);
-            send(pFndr, "toLnk$o", i);
+            if (i != pFndr.getSourceGate()) {
+                PathFinder *pFndr = (PathFinder *) pkt;
+                pFndr->setRoute(
+                    pFndr->getRoute().push_back(i)
+                );
+                pFndr->setSourceGate(i);
+                pFndr->setIsPathFinder(true);
+                send(pFndr, "toLnk$o", i);
+            }
         }
+    }
+}
+
+void Net::handleFeedback(Packet *fbk) {
+    if (fbk->getDestination() == this->getParentModule()->getIndex()) {
+        // check if better route exists if not set this one
+    } else {
+        send(fbk, "toLnk$o", fbk->getFeedbackRoute().pop_front());
+    }
+}
+
+void Net::handlePacket(Packet *pkt) {
+    if (pkt->getDestination() == this->getParentModule()->getIndex()) {
+        send(msg, "toApp$o"); // TODO msg??
+    } else {
+        send(pkt, "toLnk$o", pkt->getRoute().pop_front());
     }
 }
 
@@ -77,29 +96,11 @@ void Net::handleMessage(cMessage *msg) {
 
     if (pkt->getHopCount() == 0){
         this->handleAppMessage(pkt);
-    } else if (pkt->getIsPathFinder()){
+    } else if (pkt->getIsPathFinder()) {
         this->handlePathFinder(pkt);
-    }
-
-
-    // If this node is the final destination, send to App
-    if (pkt->getDestination() == this->getParentModule()->getIndex()) {
-        send(msg, "toApp$o");
-
-
-        Feedback *fbk = new Feedback;
-        fbk->setIsFeedback(true);
-        fbk->setFeedbackHopCount(pkt->getHopCount());
-        send(fbk, "toLnk$o", pkt->getSource());
+    } else if (pkt->getIsFeedback()) {
+        this->handleFeedback(pkt);
     } else {
-        // If not, forward the packet to some else... to who?
-        // WHO!?!?!?
-
-        pkt->setHopCount(pkt->getHopCount() + 1);
-
-        // We send to link interface #0, which is the
-        // one connected to the clockwise side of the ring
-        // Is this the best choice? are there others?
-        send(pkt, "toLnk$o", 0);
+        this->handlePacket(pkt);
     }
 }

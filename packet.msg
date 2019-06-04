@@ -9,6 +9,7 @@ packet Packet {
 
 packet Feedback extends Packet{
 	int feedbackHopCount;
+	list <int> feedbackRoute;
 }
 
 packet PathFinder extends Packet {
