@@ -13,6 +13,7 @@ private:
     cStdDev delayStats;
     cOutVector delayVector;
     cOutVector packetHopCount;
+    cOutVector packetKind;
 public:
     App();
     virtual ~App();
@@ -44,7 +45,9 @@ void App::initialize() {
     // Initialize statistics
     delayStats.setName("TotalDelay");
     delayVector.setName("Delay");
-    packetHopCount.setName("Hop count");
+    packetHopCount.setName("HopCount");
+    packetKind.setName("PacketKind");
+
 }
 
 void App::finish() {
@@ -80,7 +83,7 @@ void App::handleMessage(cMessage *msg) {
         simtime_t delay = simTime() - pkt->getCreationTime();
         delayStats.collect(delay);
         delayVector.record(delay);
-
+        packetKind.record(pkt->getKind());
         packetHopCount.record(pkt->getHopCount());
         // delete msg
         delete (msg);
