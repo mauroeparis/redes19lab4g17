@@ -1,4 +1,4 @@
-Buffer Size Network.node[1].lnk[0] (#0 - General-0-20190604-21:03:53-7007),,Buffer Size Network.node[2].lnk[0] (#0 - General-0-20190604-21:03:53-7007),,Buffer Size Network.node[3].lnk[0] (#0 - General-0-20190604-21:03:53-7007),,Buffer Size Network.node[4].lnk[0] (#0 - General-0-20190604-21:03:53-7007),,Buffer Size Network.node[0].lnk[0] (#0 - General-0-20190604-21:03:53-7007),,Buffer Size Network.node[6].lnk[0] (#0 - General-0-20190604-21:03:53-7007),,Buffer Size Network.node[7].lnk[0] (#0 - General-0-20190604-21:03:53-7007),
+timeNode1,bufferSizeNode1,timeNode2,bufferSizeNode2,timeNode3,bufferSizeNode3,timeNode4,bufferSizeNode4,timeNode0,bufferSizeNode0,timeNode6,bufferSizeNode6,timeNode7,bufferSizeNode7
 7.885332131967,1,6.885232131967,1,5.885132131967,1,4.885032131967,1,4.49280194242,1,2.425640818608,1,1.765795695688,1
 7.885332131967,0,6.885232131967,0,5.885132131967,0,4.885032131967,0,4.49280194242,0,2.425640818608,0,1.765795695688,0
 9.298021060373,1,9.303242656709,1,8.303142656709,1,7.303042656709,1,6.084582646629,1,2.717564164073,1,5.49290194242,1
