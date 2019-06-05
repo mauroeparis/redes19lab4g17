@@ -55,6 +55,12 @@ void Lnk::handleMessage(cMessage *msg) {
             scheduleAt(simTime() + serviceTime, endServiceEvent);
         }
     } else { // msg is a packet
+        Packet *pkt = (Packet *) msg;
+        if(pkt->getIsPathFinder()) {
+            PathFinder *pFndr = (PathFinder *) msg;
+            pFndr->setSourceGate(this->getIndex());
+        }
+
         if (msg->arrivedOn("toNet$i")) {
             // enqueue
             buffer.insert(msg);

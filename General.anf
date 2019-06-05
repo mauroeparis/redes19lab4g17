@@ -3,6 +3,8 @@
   <inputs>
     <inputs name="/redes19lab4g17/results/General-*.vec"/>
     <inputs name="/redes19lab4g17/results/General-*.sca"/>
+    <inputs name="results/*.vec"/>
+    <inputs name="results/*.sca"/>
   </inputs>
   <datasets/>
   <chartSheets/>
